@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trading Calculator - Awealth</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial, Helvetica, sans-serif;
+    background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+    color:white;
+}
+
+.container{
+    background:rgba(255,255,255,0.1);
+    padding:30px;
+    border-radius:12px;
+    width:400px;
+    box-shadow:0 0 15px rgba(0,0,0,0.4);
+}
+
+h1{
+    text-align:center;
+    margin-bottom:5px;
+}
+
+h3{
+    text-align:center;
+    margin-top:0;
+    font-weight:normal;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin:8px 0;
+    border:none;
+    border-radius:6px;
+}
+
+.row{
+    display:flex;
+    gap:10px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:6px;
+    background:#00c6ff;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#0072ff;
+}
+
+.result{
+    margin-top:15px;
+    font-size:14px;
+    line-height:1.6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Trading Calculator</h1>
+<h3>trading-calculator.awealth</h3>
+
+<select id="tradeType">
+<option>Crypto</option>
+<option>Forex</option>
+<option>Stocks</option>
+<option>Commodities</option>
+</select>
+
+<div class="row">
+<input type="number" id="riskAmount" placeholder="Risk Amount">
+<select id="currency">
+<option>USDT</option>
+<option>USDC</option>
+<option>BTC</option>
+<option>ETH</option>
+<option>SOL</option>
+<option>XRP</option>
+</select>
+</div>
+
+<input type="number" id="entry" placeholder="Entry Price">
+<input type="number" id="tp" placeholder="Take Profit Price">
+<input type="number" id="sl" placeholder="Stop Loss Price">
+<input type="number" id="leverage" placeholder="Leverage (e.g 10)">
+
+<button onclick="calculate()">Calculate Order</button>
+
+<div class="result" id="output"></div>
+
+</div>
+
+<script>
+function calculate(){
+
+let tradeType = document.getElementById("tradeType").value;
+let risk = parseFloat(document.getElementById("riskAmount").value);
+let entry = parseFloat(document.getElementById("entry").value);
+let tp = parseFloat(document.getElementById("tp").value);
+let sl = parseFloat(document.getElementById("sl").value);
+let leverage = parseFloat(document.getElementById("leverage").value);
+let currency = document.getElementById("currency").value;
+
+if(!risk || !entry || !tp || !sl || !leverage){
+    alert("Please fill all fields correctly.");
+    return;
+}
+
+let direction = tp > entry ? "LONG 📈" : "SHORT 📉";
+
+let riskPerUnit = Math.abs(entry - sl);
+let rewardPerUnit = Math.abs(tp - entry);
+
+let positionSize = risk / riskPerUnit;
+let orderValue = positionSize * entry;
+let marginRequired = orderValue / leverage;
+let rr = (rewardPerUnit / riskPerUnit).toFixed(2);
+
+document.getElementById("output").innerHTML =
+"<strong>Trade Type:</strong> " + tradeType + "<br>" +
+"<strong>Direction:</strong> " + direction + "<br>" +
+"<strong>Risk/Reward Ratio:</strong> 1 : " + rr + "<br>" +
+"<strong>Position Size:</strong> " + positionSize.toFixed(4) + "<br>" +
+"<strong>Order Value:</strong> " + orderValue.toFixed(2) + " " + currency + "<br>" +
+"<strong>Margin Required:</strong> " + marginRequired.toFixed(2) + " " + currency;
+}
+</script>
+
+</body>
+</html>
